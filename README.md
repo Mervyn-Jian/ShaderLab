@@ -3,11 +3,14 @@
 A framework to test graphics library (WebGL, TREE.js, etc...) and glsl shader code
 
 # Environment
+React.js  
+Express.js  
 Node.js version: v10.16.1  
 npm version: 6.9.0  
 npm vesrion control with nvm  
 
-# Run
+# Run and Build
+npm install  
 npm run build  
 npm run start:server  
   
