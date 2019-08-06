@@ -1,0 +1,49 @@
+precision mediump float;
+
+varying vec2 vTextureCoord;
+varying vec3 vTransformedNormal;
+varying vec4 vPosition;
+
+uniform bool uUseLighting;
+uniform bool uUseTextures;
+
+uniform vec3 uAmbientColor;
+uniform vec3 warm;
+uniform vec3 cool;
+
+uniform vec3 uPointLightingLocation;
+uniform vec3 uPointLightingColor;
+
+uniform sampler2D uSampler;
+
+float goochWeight(vec3 normal, vec3 lightDirection);
+vec3 goochColor(vec3 cool, vec3 warm, float weight);
+
+
+void main(void) {
+    vec3 lightWeighting;
+    if (!uUseLighting) {
+        lightWeighting = vec3(1.0, 1.0, 1.0);
+    } else {
+        vec3 lightDirection = normalize(uPointLightingLocation - vPosition.xyz);
+        vec3 color = goochColor(cool, warm, goochWeight(vTransformedNormal, lightDirection));
+
+        lightWeighting = uAmbientColor + color;
+    }
+
+    vec4 fragmentColor;
+    if (uUseTextures) {
+        fragmentColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    } else {
+        fragmentColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    gl_FragColor = vec4(fragmentColor.rgb * lightWeighting, fragmentColor.a);
+}
+
+float goochWeight(vec3 normal, vec3 lightDirection){
+    return 0.5*(1.0 + dot(normal, lightDirection));
+}
+
+vec3 goochColor(vec3 cool, vec3 warm, float weight){
+    return (1.0-weight)*cool + warm * weight;
+}

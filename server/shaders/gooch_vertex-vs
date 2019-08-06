@@ -1,0 +1,20 @@
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 project;
+    uniform mat3 invertTransNormal;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vTransformedNormal;
+    varying vec4 vPosition;
+
+
+    void main(void) {
+        vPosition = view * model * vec4(aVertexPosition, 1.0);
+        gl_Position = project * vPosition;
+        vTextureCoord = aTextureCoord;
+        vTransformedNormal = invertTransNormal * aVertexNormal;
+    }
